@@ -260,7 +260,7 @@ class SmartRehab:
 
             for i in range(0, length, 1):
                 if i == length-1:
-                    selection_index = length-1
+                    selection_index = length-1  # last slice
                     break
                 else:
                     wheel_slice1 = wheel_slices[i]
