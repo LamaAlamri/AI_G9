@@ -17,7 +17,11 @@ def main():
     smart_rehab.crossover_rate = 0.95  # 95%
     smart_rehab.mutation_rate = 0.20   # 20%
 
-    smart_rehab.create_initial_population(70)  # 70 individuals/chromosomes.
+    smart_rehab.create_initial_population(70)
+
+    # 70 individuals/chromosomes.
+    print("---------- population ---------------------- ")
+    print(SmartRehab)
 
     # Terminate either when the fitness is 1.0 (perfect)
     # or when we're at the 1,000th Generation.
@@ -83,7 +87,7 @@ def ask_for_optimal_plan():
     )
 
     # For testing:
-    # print(optimal_plan)
+   # print(optimal_plan)
 
     return optimal_plan
 
@@ -154,7 +158,8 @@ class SmartRehab:
 
         self._average_fitness = self._total_fitness / self._population_size
 
-    def evolve(self):  # to create new population for the next generation by crossover and mutation
+    def evolve(self):
+        # to create new population for the next generation by crossover and mutation
         wheel_slices = self.build_roulette_wheel_slices()
 
         # New generation.
@@ -186,8 +191,9 @@ class SmartRehab:
 # ------------------ Choose 2 parents from wheel ----------------------------------------
 
     def crossover_by_roulette_wheel(self, wheel_slices):
+        # chose mom from wheel
         mom_index = self.select_index_by_roulette_wheel(wheel_slices)
-
+        # chose dad which is >>> not same slice of mom
         dad_index = self.select_index_by_roulette_wheel(
             wheel_slices, mom_index)
 
@@ -199,7 +205,7 @@ class SmartRehab:
 
     def build_roulette_wheel_slices(self):
         wheel_slices = []
-        current_sum = 0.0  # ---------
+        current_sum = 0.0  # -------- range of each slice start from here
 
         # _fitnesses was filled in compute_fitness().
         for fitness in self._fitnesses:
@@ -208,8 +214,9 @@ class SmartRehab:
 
             # Avoid divide by 0 and negative (invalid) slices.
             if fitness > 0.0 and self._total_fitness > 0.0:
+
                 # End of slice (range).
-                wheel_slice += (fitness / self._total_fitness)
+                wheel_slice += (fitness / self._total_fitness)  # size of slice
 
             wheel_slices.append(wheel_slice)
 
@@ -235,11 +242,13 @@ class SmartRehab:
     def select_index_by_roulette_wheel(wheel_slices, partner_index=-1,
                                        selection_slice=None):
         length = len(wheel_slices)
-
+        # means only one slice then select it
         if length <= 1:
             return 0
         # to find the index of mom and dad
         # Pick a random slice .
+
+        # --------------------- get a random number between 0-1 -------------
         if selection_slice is None:
             selection_slice = random.random()
 
@@ -248,6 +257,7 @@ class SmartRehab:
         if selection_slice <= wheel_slices[0]:
             selection_index = 0
         else:
+
             for i in range(0, length, 1):
                 if i == length-1:
                     selection_index = length-1
@@ -262,6 +272,7 @@ class SmartRehab:
         # Try to avoid same parents
         # where partner_index is the current partner (other parent).
         # the dad's turn will be the index of the mom which is the partner (the mom becuse she the first there is no partner so it will be -1)
+
         if selection_index == partner_index:
             if selection_index > 0:  # always take the previous slice except if the selection_index =0
                 selection_index -= 1
